@@ -5,5 +5,5 @@ $ hexo new "my new blog"
 $ hexo s
 $ hexo generate
 $ hexo deploy
-$ hexo new page "tags"
+$ hexo new page "tags"  // 添加新页面
 ```

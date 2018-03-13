@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle:
-description: What pains us trains us.
+title: Kiwi Yan's Blog
+subtitle: what pains us trains us.
+description: 
 author: Kiwi Yan
-language:
+language: zh-Hans
 timezone:
 
 # URL
@@ -81,3 +81,9 @@ deploy:
   type: git
   repo: https://github.com/kiwiyan/kiwiyan.github.io
   branch: master
+
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
