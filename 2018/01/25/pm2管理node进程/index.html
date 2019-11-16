@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="pm2.5, 不好意思，pm2是一个nodejs应用管理工具，可以很方便得进行以前比较繁琐的管理工作，比如自动重启，性能监控，负载均衡等。 以前启动一个node server，一般是运行npm start，其实是运行node app.js,如果想修改server代码的话，就得ctrl + c关掉服务，再运行npm start，这样的工作进行多次着实繁琐。使用pm2 的话，运行pm2 start a">
+<meta name="keywords" content="node管理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pm2管理node进程">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;01&#x2F;25&#x2F;pm2%E7%AE%A1%E7%90%86node%E8%BF%9B%E7%A8%8B&#x2F;index.html">
+<meta property="og:site_name" content="Kiwi Yan&#39;s Blog">
+<meta property="og:description" content="pm2.5, 不好意思，pm2是一个nodejs应用管理工具，可以很方便得进行以前比较繁琐的管理工作，比如自动重启，性能监控，负载均衡等。 以前启动一个node server，一般是运行npm start，其实是运行node app.js,如果想修改server代码的话，就得ctrl + c关掉服务，再运行npm start，这样的工作进行多次着实繁琐。使用pm2 的话，运行pm2 start a">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-15T08:36:00.913Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2018/01/25/pm2%E7%AE%A1%E7%90%86node%E8%BF%9B%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>pm2管理node进程 | Kiwi Yan's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Kiwi Yan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">what pains us trains us.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>Schedule</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/25/pm2%E7%AE%A1%E7%90%86node%E8%BF%9B%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.jpg">
+      <meta itemprop="name" content="Kiwi Yan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi Yan's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          pm2管理node进程<a href="https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name_posts/pm2%E7%AE%A1%E7%90%86node%E8%BF%9B%E7%A8%8B.md" class="post-edit-link" title="Edit this post" rel="noopener" target="_blank"><i class="fa fa-pencil"></i></a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-01-25 11:15:08" itemprop="dateCreated datePublished" datetime="2018-01-25T11:15:08+08:00">2018-01-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-15 16:36:00" itemprop="dateModified" datetime="2019-11-15T16:36:00+08:00">2019-11-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/nodejs/" itemprop="url" rel="index">
+                    <span itemprop="name">nodejs</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2018/01/25/pm2%E7%AE%A1%E7%90%86node%E8%BF%9B%E7%A8%8B/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/01/25/pm2%E7%AE%A1%E7%90%86node%E8%BF%9B%E7%A8%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>pm2.5, 不好意思，pm2是一个nodejs应用管理工具，可以很方便得进行以前比较繁琐的管理工作，比如自动重启，性能监控，负载均衡等。</p>
+<p>以前启动一个node server，一般是运行npm start，其实是运行node app.js,如果想修改server代码的话，就得ctrl + c关掉服务，再运行npm start，这样的工作进行多次着实繁琐。使用pm2 的话，运行pm2 start appId –watch,会监听你的进程，每次修改后服务会自动重启。而且pm2还能同时管理多个node进程，只开一个命令行窗口就可以。</p>
+<a id="more"></a>
+<h2 id="安装pm2"><a href="#安装pm2" class="headerlink" title="安装pm2"></a>安装pm2</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install pm2 -g</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用pm2-命令"><a href="#常用pm2-命令" class="headerlink" title="常用pm2 命令"></a>常用pm2 命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">$ pm2 start app.js # 启动app.js应用程序</span><br><span class="line">$ pm2 start app.js -i 4 # cluster mode 模式启动4个app.js的应用实例</span><br><span class="line"># 4个应用程序会自动进行负载均衡</span><br><span class="line">$ pm2 start app.js --name=&quot;api&quot; # 启动应用程序并命名为 &quot;api&quot;</span><br><span class="line">$ pm2 start app.js --watch # 当文件变化时自动重启应用</span><br><span class="line">$ pm2 start script.sh # 启动 bash 脚本</span><br><span class="line"></span><br><span class="line">$ pm2 list # 列表 PM2 启动的所有的应用程序</span><br><span class="line">$ pm2 monit # 显示每个应用程序的CPU和内存占用情况</span><br><span class="line">$ pm2 show [app-name] # 显示应用程序的所有信息</span><br><span class="line"></span><br><span class="line">$ pm2 logs # 显示所有应用程序的日志</span><br><span class="line">$ pm2 logs [app-name] # 显示指定应用程序的日志</span><br><span class="line"></span><br><span class="line">$ pm2 stop all # 停止所有的应用程序</span><br><span class="line">$ pm2 stop 0 # 停止 id为 0的指定应用程序</span><br><span class="line">$ pm2 restart all # 重启所有应用</span><br><span class="line">$ pm2 reload all # 重启 cluster mode下的所有应用</span><br><span class="line">$ pm2 gracefulReload all # Graceful reload all apps in cluster mode</span><br><span class="line">$ pm2 delete all # 关闭并删除所有应用</span><br><span class="line">$ pm2 delete 0 # 删除指定应用 id 0</span><br><span class="line">$ pm2 scale api 10 # 把名字叫api的应用扩展到10个实例</span><br><span class="line">$ pm2 reset [app-name] # 重置重启数量</span><br><span class="line"></span><br><span class="line">$ pm2 startup # 创建开机自启动命令</span><br><span class="line">$ pm2 save # 保存当前应用列表</span><br><span class="line">$ pm2 resurrect # 重新加载保存的应用列表</span><br><span class="line">$ pm2 update # Save processes, kill PM2 and restore processes</span><br><span class="line">$ pm2 generate # Generate a sample json configuration file</span><br><span class="line">pm2 start app.js --node-args=&quot;--max-old-space-size=1024&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="pm2配置文件"><a href="#pm2配置文件" class="headerlink" title="pm2配置文件"></a>pm2配置文件</h2><p>命令行配置比较多时，可以使用pm2的配置文件来启动。比如设置环境变量，实时监听等都很方便，也一目了然。<br>如下配置比如起名 start.json，<br>运行 pm2 start start.json 则会设置默认的环境变量 NODE_ENV 为production，<br>运行 pm2 start start.json –env test 则设置NODE_ENV 为test。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"apps"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">"name"</span>: <span class="string">"t-server"</span>,</span><br><span class="line">            <span class="string">"script"</span>: <span class="string">"src/app.js"</span>,</span><br><span class="line">            <span class="string">"watch"</span>: <span class="literal">true</span>,</span><br><span class="line">            <span class="string">"env"</span>: &#123;</span><br><span class="line">                <span class="string">"NODE_ENV"</span>: <span class="string">"production"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="string">"env_test"</span> : &#123;</span><br><span class="line">                <span class="string">"NODE_ENV"</span>: <span class="string">"test"</span></span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/node%E7%AE%A1%E7%90%86/" rel="tag"># node管理</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2018/01/16/docker%E5%88%9D%E6%8E%A2/" rel="next" title="docker初探">
+                  <i class="fa fa-chevron-left"></i> docker初探
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2018/02/20/%E4%BB%8Emarkdown%E5%BC%80%E5%A7%8B/" rel="prev" title="从markdown开始">
+                  从markdown开始 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装pm2"><span class="nav-number">1.</span> <span class="nav-text">安装pm2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用pm2-命令"><span class="nav-number">2.</span> <span class="nav-text">常用pm2 命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pm2配置文件"><span class="nav-number">3.</span> <span class="nav-text">pm2配置文件</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kiwi Yan"
+      src="/images/me.jpg">
+  <p class="site-author-name" itemprop="name">Kiwi Yan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kiwiyan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kiwiyan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kiwi Yan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="90" alpha="0.5" zIndex="-1" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'OPx3IaJ1jXnyKhsbInJssqF4-gzGzoHsz',
+    appKey: 'z7pFGlWc8SIl4L5OPDAatBfy',
+    placeholder: "Just go go",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

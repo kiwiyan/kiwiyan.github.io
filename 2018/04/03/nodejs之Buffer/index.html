@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="什么是Buffer？Buffer 是 Node.js 中用于处理二进制数据的类, 其中与 IO 相关的操作 (网络请请求&#x2F;文件读写等) 均基于 Buffer。Buffer 类的实例非常类似整数数组, 但其大小是固定不变的, 并且其内存在 V8 堆栈外分配原始内存空间。 Buffer 类的实例创建之后, 其所占用的内存大小就不能再进行调整。">
+<meta name="keywords" content="nodejs模块">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nodejs之Buffer">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;04&#x2F;03&#x2F;nodejs%E4%B9%8BBuffer&#x2F;index.html">
+<meta property="og:site_name" content="Kiwi Yan&#39;s Blog">
+<meta property="og:description" content="什么是Buffer？Buffer 是 Node.js 中用于处理二进制数据的类, 其中与 IO 相关的操作 (网络请请求&#x2F;文件读写等) 均基于 Buffer。Buffer 类的实例非常类似整数数组, 但其大小是固定不变的, 并且其内存在 V8 堆栈外分配原始内存空间。 Buffer 类的实例创建之后, 其所占用的内存大小就不能再进行调整。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-15T08:36:00.912Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2018/04/03/nodejs%E4%B9%8BBuffer/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>nodejs之Buffer | Kiwi Yan's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Kiwi Yan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">what pains us trains us.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>Schedule</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/03/nodejs%E4%B9%8BBuffer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.jpg">
+      <meta itemprop="name" content="Kiwi Yan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi Yan's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          nodejs之Buffer<a href="https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name_posts/nodejs%E4%B9%8BBuffer.md" class="post-edit-link" title="Edit this post" rel="noopener" target="_blank"><i class="fa fa-pencil"></i></a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-04-03 20:53:45" itemprop="dateCreated datePublished" datetime="2018-04-03T20:53:45+08:00">2018-04-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-15 16:36:00" itemprop="dateModified" datetime="2019-11-15T16:36:00+08:00">2019-11-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/nodejs/" itemprop="url" rel="index">
+                    <span itemprop="name">nodejs</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2018/04/03/nodejs%E4%B9%8BBuffer/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/04/03/nodejs%E4%B9%8BBuffer/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="什么是Buffer？"><a href="#什么是Buffer？" class="headerlink" title="什么是Buffer？"></a>什么是Buffer？</h3><p>Buffer 是 Node.js 中用于处理二进制数据的类, 其中与 IO 相关的操作 (网络请请求/文件读写等) 均基于 Buffer。<br>Buffer 类的实例非常类似整数数组, 但其大小是固定不变的, 并且其内存在 V8 堆栈外分配原始内存空间。 Buffer 类的实例创建之后, 其所占用的内存大小就不能再进行调整。</p>
+<a id="more"></a>
+
+<h3 id="Buffer对象的创建"><a href="#Buffer对象的创建" class="headerlink" title="Buffer对象的创建"></a>Buffer对象的创建</h3><p>Buffer对象类似于数组，每个元素由两个16进制的整数组成。<br>Node 6.x之后，new Buffer()的方式被弃用。创建Buffer对象常用的方法有：</p>
+<table>
+<thead>
+<tr>
+<th>api</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Buffer.from()</td>
+<td>根据已有数据生成一个 Buffer 对象</td>
+</tr>
+<tr>
+<td>Buffer.alloc()</td>
+<td>创建一个初始化后的 Buffer 对象</td>
+</tr>
+<tr>
+<td>Buffer.allocUnsafe()</td>
+<td>创建一个未初始化的 Buffer 对象</td>
+</tr>
+</tbody></table>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建一个根据字符串生成的buffer</span></span><br><span class="line"><span class="keyword">let</span> str = <span class="string">'床前明月光，疑是地上霜，举头望明月，低头思故乡'</span>;</span><br><span class="line"><span class="keyword">let</span> buffer1 = Buffer.from(str);</span><br><span class="line"><span class="built_in">console</span>.log(buffer1); <span class="comment">//&lt;Buffer e7 aa 97 e5 89 8d e6 98 8e e6 9c 88 e5 85 89 ef bc 8c e7 96 91 e6 98 af e5 9c b0 e4 b8 8a e9 9c 9c ef bc 8c e4 b8 be e5 a4 b4 e6 9c 9b e6 98 8e e6 9c 88 ef bc 8c e4 bd 8e e5 a4 b4 e6 80 9d e6 95 85 e4 b9 a1&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个长度为 10、且用 0x1 填充的 Buffer。</span></span><br><span class="line"><span class="keyword">let</span> buffer2 = Buffer.alloc(<span class="number">10</span>, <span class="number">1</span>);</span><br><span class="line"><span class="built_in">console</span>.log(buffer2); <span class="comment">//&lt;Buffer 01 01 01 01 01 01 01 01 01 01&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个长度为 10、且未初始化的 Buffer。</span></span><br><span class="line"><span class="keyword">let</span> buffer3 = Buffer.allocUnsafe(<span class="number">10</span>);</span><br><span class="line"><span class="built_in">console</span>.log(buffer3); <span class="comment">//&lt;Buffer 00 00 00 00 00 00 00 00 00 00&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Buffer的转换"><a href="#Buffer的转换" class="headerlink" title="Buffer的转换"></a>Buffer的转换</h3><h4 id="Buffer转成字符串"><a href="#Buffer转成字符串" class="headerlink" title="Buffer转成字符串"></a>Buffer转成字符串</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取文件数据</span></span><br><span class="line">fs.readFile(<span class="string">'./test.txt'</span>, (err, bufferData) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(bufferData.toString()); <span class="comment">//通过toString 转换成字符串，toString可传一个参数，包含ASCII，utf-8,base64,binary等，默认为utf-8</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="将图片转成base64格式字符串"><a href="#将图片转成base64格式字符串" class="headerlink" title="将图片转成base64格式字符串"></a>将图片转成base64格式字符串</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取文件将图片转为base64格式的字符串</span></span><br><span class="line"><span class="keyword">let</span> bufferFile = fs.readFileSync(<span class="string">'test.png'</span>);</span><br><span class="line"><span class="keyword">let</span> baseData = data.toString(<span class="string">'base64);</span></span><br><span class="line"><span class="string">let base64Data = `data:image/png;base64,$&#123;baseData&#125;`;</span></span><br><span class="line"><span class="string">console.log(base64Data); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAI...</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Buffer拼接"><a href="#Buffer拼接" class="headerlink" title="Buffer拼接"></a>Buffer拼接</h2><h3 id="中文乱码问题。"><a href="#中文乱码问题。" class="headerlink" title="中文乱码问题。"></a>中文乱码问题。</h3><p>中文在utf-8编码下占3个元素，英文和半角符占1个字符。还是以“床前明月光，疑是地上霜，举头望明月，低头思故乡”这首诗举例，这首诗文本生成的Buffer打印出来为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Buffer e7 aa 97 e5 89 8d e6 98 8e e6 9c 88 e5 85 89 ef bc 8c e7 96 91 e6 98 af e5 9c b0 e4 b8 8a e9 9c 9c ef bc 8c e4 b8 be e5 a4 b4 e6 9c 9b e6 98 8e e6 9c 88 ef bc 8c e4 bd 8e e5 a4 b4 e6 80 9d e6 95 85 e4 b9 a1&gt;</span><br></pre></td></tr></table></figure>
+<p>e7 aa 97表示汉字“床”，e6 9c 88则表示第4个字“月”，但在此设置buffer对象长度为11，第10个元素即第4个字被截断了，就出现了乱码。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 假设test.txt 文本内容为“床前明月光，疑是地上霜，举头望明月，低头思故乡”</span></span><br><span class="line"><span class="keyword">let</span> rs = fs.createReadStream(<span class="string">'./test.txt'</span>, &#123;</span><br><span class="line">    highWaterMark: <span class="number">11</span> <span class="comment">//最大限制11个字节读取</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">let</span> txt = <span class="string">''</span>;</span><br><span class="line">rs.on(<span class="string">'data'</span>,(chunk) =&gt; &#123;</span><br><span class="line">    txt += chunk; <span class="comment">// 隐含一个操作，相当于 txt = txt.toString() + chunk.toString()</span></span><br><span class="line">&#125;);</span><br><span class="line">rs.on(<span class="string">'end'</span>,() =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(txt); <span class="comment">//窗前明��光，疑���地上霜，举头��明月，���头思故乡</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="如何解决中文乱码问题？"><a href="#如何解决中文乱码问题？" class="headerlink" title="如何解决中文乱码问题？"></a>如何解决中文乱码问题？</h3><p>一个方法是将多个小Buffer拼接成一个大Buffer，避免了单个转换造成的部分中文字节不完整造成的乱码现象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> rs = fs.createReadStream(<span class="string">'./test.txt'</span>, &#123;</span><br><span class="line">    highWaterMark: <span class="number">11</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">let</span> buf = [];</span><br><span class="line"><span class="keyword">let</span> size = <span class="number">0</span>;</span><br><span class="line">rs.on(<span class="string">'data'</span>,chunk =&gt; &#123;</span><br><span class="line">    buf.push(chunk);</span><br><span class="line">    size += chunk.length;</span><br><span class="line">&#125;);</span><br><span class="line">rs.on(<span class="string">'end'</span>,() =&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> buffer1 = Buffer.concat(buf, size);</span><br><span class="line">    <span class="built_in">console</span>.log(buffer1.toString());  <span class="comment">//窗前明月光，疑是地上霜，举头望明月，低头思故乡</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Buffer-其他api"><a href="#Buffer-其他api" class="headerlink" title="Buffer 其他api"></a>Buffer 其他api</h3><p>concat 连接buffer，slice 截取，equal 比较是否相同等,api操作与数组比较相似。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nodejs%E6%A8%A1%E5%9D%97/" rel="tag"># nodejs模块</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2018/02/26/%E5%8F%91%E5%B8%83%E6%9C%89%E5%85%A8%E5%B1%80%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84npm%E5%8C%85/" rel="next" title="发布有全局命令行的npm包">
+                  <i class="fa fa-chevron-left"></i> 发布有全局命令行的npm包
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2018/04/20/%E8%AE%B0%E5%BD%95git%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/" rel="prev" title="记录git的一些常用操作">
+                  记录git的一些常用操作 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Buffer？"><span class="nav-number">1.</span> <span class="nav-text">什么是Buffer？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer对象的创建"><span class="nav-number">2.</span> <span class="nav-text">Buffer对象的创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer的转换"><span class="nav-number">3.</span> <span class="nav-text">Buffer的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Buffer转成字符串"><span class="nav-number">3.1.</span> <span class="nav-text">Buffer转成字符串</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将图片转成base64格式字符串"><span class="nav-number">4.</span> <span class="nav-text">将图片转成base64格式字符串</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Buffer拼接"><span class="nav-number"></span> <span class="nav-text">Buffer拼接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#中文乱码问题。"><span class="nav-number">1.</span> <span class="nav-text">中文乱码问题。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何解决中文乱码问题？"><span class="nav-number">2.</span> <span class="nav-text">如何解决中文乱码问题？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer-其他api"><span class="nav-number">3.</span> <span class="nav-text">Buffer 其他api</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kiwi Yan"
+      src="/images/me.jpg">
+  <p class="site-author-name" itemprop="name">Kiwi Yan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kiwiyan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kiwiyan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kiwi Yan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="90" alpha="0.5" zIndex="-1" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'OPx3IaJ1jXnyKhsbInJssqF4-gzGzoHsz',
+    appKey: 'z7pFGlWc8SIl4L5OPDAatBfy',
+    placeholder: "Just go go",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

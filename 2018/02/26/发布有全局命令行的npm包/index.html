@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="npm 常用命令npm是随着nodejs一起安装的包管理工具，可以安装，卸载，发布nodejs包。 12345678910npm init  工程初始化，生成package.json文件npm i &amp;lt;name&amp;gt; 安装(i或者install都可以)npm i &amp;lt;name@1.0.2&amp;gt; 制定版本安装npm i &amp;lt;name&amp;gt; -S 安装以及将信息写入package.j">
+<meta name="keywords" content="npm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="发布有全局命令行的npm包">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;02&#x2F;26&#x2F;%E5%8F%91%E5%B8%83%E6%9C%89%E5%85%A8%E5%B1%80%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84npm%E5%8C%85&#x2F;index.html">
+<meta property="og:site_name" content="Kiwi Yan&#39;s Blog">
+<meta property="og:description" content="npm 常用命令npm是随着nodejs一起安装的包管理工具，可以安装，卸载，发布nodejs包。 12345678910npm init  工程初始化，生成package.json文件npm i &amp;lt;name&amp;gt; 安装(i或者install都可以)npm i &amp;lt;name@1.0.2&amp;gt; 制定版本安装npm i &amp;lt;name&amp;gt; -S 安装以及将信息写入package.j">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-15T08:36:00.914Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2018/02/26/%E5%8F%91%E5%B8%83%E6%9C%89%E5%85%A8%E5%B1%80%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84npm%E5%8C%85/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>发布有全局命令行的npm包 | Kiwi Yan's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Kiwi Yan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">what pains us trains us.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>Schedule</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/26/%E5%8F%91%E5%B8%83%E6%9C%89%E5%85%A8%E5%B1%80%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84npm%E5%8C%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.jpg">
+      <meta itemprop="name" content="Kiwi Yan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi Yan's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          发布有全局命令行的npm包<a href="https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name_posts/%E5%8F%91%E5%B8%83%E6%9C%89%E5%85%A8%E5%B1%80%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84npm%E5%8C%85.md" class="post-edit-link" title="Edit this post" rel="noopener" target="_blank"><i class="fa fa-pencil"></i></a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-02-26 19:50:41" itemprop="dateCreated datePublished" datetime="2018-02-26T19:50:41+08:00">2018-02-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-15 16:36:00" itemprop="dateModified" datetime="2019-11-15T16:36:00+08:00">2019-11-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/nodejs/" itemprop="url" rel="index">
+                    <span itemprop="name">nodejs</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2018/02/26/%E5%8F%91%E5%B8%83%E6%9C%89%E5%85%A8%E5%B1%80%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84npm%E5%8C%85/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/02/26/%E5%8F%91%E5%B8%83%E6%9C%89%E5%85%A8%E5%B1%80%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84npm%E5%8C%85/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="npm-常用命令"><a href="#npm-常用命令" class="headerlink" title="npm 常用命令"></a>npm 常用命令</h3><p>npm是随着nodejs一起安装的包管理工具，可以安装，卸载，发布nodejs包。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">npm init  工程初始化，生成package.json文件</span><br><span class="line"></span><br><span class="line">npm i &lt;name&gt; 安装(i或者install都可以)</span><br><span class="line">npm i &lt;name@1.0.2&gt; 制定版本安装</span><br><span class="line">npm i &lt;name&gt; -S 安装以及将信息写入package.json的dependencies</span><br><span class="line">npm i &lt;name&gt; -D 安装及将信息写入package.json的devDependencies里</span><br><span class="line"></span><br><span class="line">npm root -g查看全局安装目录</span><br><span class="line"></span><br><span class="line">npm list -g --depth 0  查看安装了哪些全局模块，深度为第一层</span><br></pre></td></tr></table></figure>
+<p>那么如何发布一个npm包呢？<br>本文主要介绍如何发布一个有全局命令的npm包。</p>
+<a id="more"></a>
+<h3 id="发布全局命令行npm包"><a href="#发布全局命令行npm包" class="headerlink" title="发布全局命令行npm包"></a>发布全局命令行npm包</h3><p>在这里我们做一个命令行工具，运行全局命令$ viewcom，可以查看电脑基本信息，包括cpu，ipv4，ipv6，mac地址等，并且发布到npm仓库可为大家下载使用。</p>
+<h4 id="1-创建根文件夹viewcom"><a href="#1-创建根文件夹viewcom" class="headerlink" title="1. 创建根文件夹viewcom"></a>1. 创建根文件夹viewcom</h4><p>运行 $ npm init，产生package.json，填写相关信息。<br>为了规范化，package.json里我们尽量写上name，description，keywords，git地址等信息，方便他人搜索和使用，万一哪天我们的项目对别人产生价值也说不定呢。</p>
+<h4 id="2-根路径下创建index-js"><a href="#2-根路径下创建index-js" class="headerlink" title="2. 根路径下创建index.js"></a>2. 根路径下创建index.js</h4><p>index.js里边是工程的核心代码。<br>根路径下，运行node index.js也可以打印出电脑信息。代码比较简单，就是通过node的os模块获取电脑信息并整合在一起。<br>index.js文件内容：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> os = <span class="built_in">require</span>(<span class="string">'os'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> cpu = os.cpus()[<span class="number">0</span>].model;</span><br><span class="line"><span class="keyword">let</span> memory = <span class="built_in">Math</span>.round(os.totalmem() / <span class="number">1024</span> / <span class="number">1024</span> / <span class="number">1024</span>) + <span class="string">'G'</span>;</span><br><span class="line"><span class="keyword">let</span> memoryUseRatio = <span class="built_in">Math</span>.round(os.freemem() / os.totalmem() * <span class="number">100</span>) + <span class="string">'%'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> localnet = os.networkInterfaces()[<span class="string">'本地连接'</span>]; <span class="comment">// todo 有些电脑获取不到，待解决</span></span><br><span class="line"><span class="keyword">let</span> macAddress = localnet ? localnet[<span class="number">0</span>].mac : <span class="string">''</span>;</span><br><span class="line"><span class="keyword">let</span> ipv6 = localnet ? localnet[<span class="number">0</span>].address : <span class="string">''</span>;</span><br><span class="line"><span class="keyword">let</span> ipv4 = localnet ? localnet[<span class="number">1</span>].address : <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> platform = os.platform();</span><br><span class="line"><span class="keyword">let</span> arch = os.arch();</span><br><span class="line"><span class="keyword">let</span> hostname = os.hostname();</span><br><span class="line"><span class="keyword">let</span> username = os.userInfo().username;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'\x1B[33m%s\x1b[0m'</span>, <span class="string">'Computer Info:'</span>, &#123;</span><br><span class="line">  cpu,</span><br><span class="line">  memory,</span><br><span class="line">  memoryUseRatio,</span><br><span class="line">  macAddress,</span><br><span class="line">  ipv6,</span><br><span class="line">  ipv4,</span><br><span class="line">  platform,</span><br><span class="line">  arch,</span><br><span class="line">  hostname,</span><br><span class="line">  username</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="3-添加bin-viewcom文件内容"><a href="#3-添加bin-viewcom文件内容" class="headerlink" title="3. 添加bin/viewcom文件内容"></a>3. 添加bin/viewcom文件内容</h4><p>直接node index.js也可以打印出电脑的基本信心，但我们想通过命令行的方式来打印，在这里编辑bin/viewcom, 写入如下代码。<br>第一行代码是linux/unix的写法，意思是告诉系统用node来执行下面的代码。<br>第二行代码表示引入根路径的index.js并执行。<br>bin/viewcom文件中的内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env node</span><br><span class="line">require(&apos;../index.js&apos;);</span><br></pre></td></tr></table></figure>
+<h4 id="4-修改package-json的内容"><a href="#4-修改package-json的内容" class="headerlink" title="4. 修改package.json的内容"></a>4. 修改package.json的内容</h4><p>在文件尾部添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;bin&quot;: &#123;</span><br><span class="line">  &quot;viewcom&quot;: &quot;bin/viewcom&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-测试运行"><a href="#5-测试运行" class="headerlink" title="5. 测试运行"></a>5. 测试运行</h4><p>根目录下运行如下命令，将此模块添加进全局。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i . -g</span><br></pre></td></tr></table></figure>
+<p>然后随意找个目录，运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewcom</span><br></pre></td></tr></table></figure>
+<p>这时你会发现，电脑信息打印出来了，这个模块开发就完成了。<br>注意这一步骤不是必需的，这里只是用来测试，这也是一种全局安装方式，测试完成后，可以先卸掉这个全局模块,发布成功后再拉去线上模块来使用。<br>卸载安装的全局模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall viewcom -g</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-上传到npm仓库"><a href="#6-上传到npm仓库" class="headerlink" title="6. 上传到npm仓库"></a>6. 上传到npm仓库</h4><p>首先你需要有一个npm账号，没有的话官网注册很简单。接着，在项目跟路径下运行 npm login 登录npm。<br>最后运行npm publish，出现 ‘+viewcom@1.0.0’的话表示发布成功了。<br>有时npm publish时会提示失败，可能登录时的账号密码有误，也有可能是npm 使用了非官方的源。可以运行npm config ls查看registry源，如果不是官方源头，可以设置为官方源：npm config set registry <a href="https://registry.npmjs.org/" target="_blank" rel="noopener">https://registry.npmjs.org/</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm publish</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-使用"><a href="#7-使用" class="headerlink" title="7. 使用"></a>7. 使用</h4><p>发布成功后就可以像安装其他模块那样来使用了。<br>安装：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i viewcom -g</span><br></pre></td></tr></table></figure>
+<p>使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewcom</span><br></pre></td></tr></table></figure>
+
+<h4 id="8-发布注意下项"><a href="#8-发布注意下项" class="headerlink" title="8. 发布注意下项"></a>8. 发布注意下项</h4><p>如果只是发布npm包，不需要全局命令行的话，那么也不需要bin文件以及package.json中的bin配置项，发布到npm的方式是一样的。<br>注意name项是必填的，而且不能同名，命名前可以搜下是否有这个命名的模块。更新发布的话，修改下version信息，重新publish就可以</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/npm/" rel="tag"># npm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2018/02/20/%E4%BB%8Emarkdown%E5%BC%80%E5%A7%8B/" rel="next" title="从markdown开始">
+                  <i class="fa fa-chevron-left"></i> 从markdown开始
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2018/04/03/nodejs%E4%B9%8BBuffer/" rel="prev" title="nodejs之Buffer">
+                  nodejs之Buffer <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#npm-常用命令"><span class="nav-number">1.</span> <span class="nav-text">npm 常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发布全局命令行npm包"><span class="nav-number">2.</span> <span class="nav-text">发布全局命令行npm包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-创建根文件夹viewcom"><span class="nav-number">2.1.</span> <span class="nav-text">1. 创建根文件夹viewcom</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-根路径下创建index-js"><span class="nav-number">2.2.</span> <span class="nav-text">2. 根路径下创建index.js</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-添加bin-viewcom文件内容"><span class="nav-number">2.3.</span> <span class="nav-text">3. 添加bin/viewcom文件内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-修改package-json的内容"><span class="nav-number">2.4.</span> <span class="nav-text">4. 修改package.json的内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-测试运行"><span class="nav-number">2.5.</span> <span class="nav-text">5. 测试运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-上传到npm仓库"><span class="nav-number">2.6.</span> <span class="nav-text">6. 上传到npm仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-使用"><span class="nav-number">2.7.</span> <span class="nav-text">7. 使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-发布注意下项"><span class="nav-number">2.8.</span> <span class="nav-text">8. 发布注意下项</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kiwi Yan"
+      src="/images/me.jpg">
+  <p class="site-author-name" itemprop="name">Kiwi Yan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kiwiyan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kiwiyan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kiwi Yan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="90" alpha="0.5" zIndex="-1" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'OPx3IaJ1jXnyKhsbInJssqF4-gzGzoHsz',
+    appKey: 'z7pFGlWc8SIl4L5OPDAatBfy',
+    placeholder: "Just go go",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

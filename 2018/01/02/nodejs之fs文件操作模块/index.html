@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="fs模块提供常用文件操作，包含读写等功能，这些操作基本都有【异步】和【同步】两种方式。注意一般参数标注的方式，方法中带中括号的参数表示可选。 读取-文件，目录异步读文件 readFile()readFile(path[, options], callback),第二个参数可选，不设置编码的话，data为buffer数据。路径为文件夹则报错。 1234fs.readFile(&amp;apos;.&#x2F;test.js&amp;apos;,">
+<meta name="keywords" content="nodejs模块">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nodejs之fs文件操作模块">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;01&#x2F;02&#x2F;nodejs%E4%B9%8Bfs%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%A8%A1%E5%9D%97&#x2F;index.html">
+<meta property="og:site_name" content="Kiwi Yan&#39;s Blog">
+<meta property="og:description" content="fs模块提供常用文件操作，包含读写等功能，这些操作基本都有【异步】和【同步】两种方式。注意一般参数标注的方式，方法中带中括号的参数表示可选。 读取-文件，目录异步读文件 readFile()readFile(path[, options], callback),第二个参数可选，不设置编码的话，data为buffer数据。路径为文件夹则报错。 1234fs.readFile(&amp;apos;.&#x2F;test.js&amp;apos;,">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-15T08:36:00.913Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2018/01/02/nodejs%E4%B9%8Bfs%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%A8%A1%E5%9D%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>nodejs之fs文件操作模块 | Kiwi Yan's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Kiwi Yan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">what pains us trains us.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>Schedule</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/02/nodejs%E4%B9%8Bfs%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%A8%A1%E5%9D%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.jpg">
+      <meta itemprop="name" content="Kiwi Yan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi Yan's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          nodejs之fs文件操作模块<a href="https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name_posts/nodejs%E4%B9%8Bfs%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%A8%A1%E5%9D%97.md" class="post-edit-link" title="Edit this post" rel="noopener" target="_blank"><i class="fa fa-pencil"></i></a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-01-02 23:26:33" itemprop="dateCreated datePublished" datetime="2018-01-02T23:26:33+08:00">2018-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-15 16:36:00" itemprop="dateModified" datetime="2019-11-15T16:36:00+08:00">2019-11-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/nodejs/" itemprop="url" rel="index">
+                    <span itemprop="name">nodejs</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2018/01/02/nodejs%E4%B9%8Bfs%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%A8%A1%E5%9D%97/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/01/02/nodejs%E4%B9%8Bfs%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E6%A8%A1%E5%9D%97/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>fs模块提供常用文件操作，包含读写等功能，这些操作基本都有【异步】和【同步】两种方式。注意一般参数标注的方式，方法中带中括号的参数表示可选。</p>
+<h2 id="读取-文件，目录"><a href="#读取-文件，目录" class="headerlink" title="读取-文件，目录"></a>读取-文件，目录</h2><h3 id="异步读文件-readFile"><a href="#异步读文件-readFile" class="headerlink" title="异步读文件 readFile()"></a>异步读文件 readFile()</h3><p>readFile(path[, options], callback),第二个参数可选，不设置编码的话，data为buffer数据。路径为文件夹则报错。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fs.readFile(<span class="string">'./test.js'</span>, <span class="string">'utf-8'</span>, (err, data) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="同步读文件-readFileSync"><a href="#同步读文件-readFileSync" class="headerlink" title="同步读文件 readFileSync()"></a>同步读文件 readFileSync()</h3><p>readFileSync(path[, options])</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> text = fs.readFileSync(<span class="string">'./test.js'</span>, <span class="string">'utf-8'</span>);</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> text = fs.readFileSync(<span class="string">'./test.js'</span>).toString();</span><br></pre></td></tr></table></figure>
+
+<h3 id="读取一级子目录-readdir"><a href="#读取一级子目录-readdir" class="headerlink" title="读取一级子目录 readdir()"></a>读取一级子目录 readdir()</h3><p>readdir(path[, options], callback) 第二个参数为编码方式，可选，默认值’utf-8’。比如文件夹somedir里有文件夹dir1，文件夹dir2，以及文件test.js，那读取的结果为[‘dir1’, ‘dir2’, ‘test.js’]，注意是文件名，不是路径;读取的目标不是文件夹则报错。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fs.readdir(<span class="string">'./somedir'</span>, (err, files) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">    <span class="built_in">console</span>.log(files);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="读取文件信息-stat"><a href="#读取文件信息-stat" class="headerlink" title="读取文件信息 stat()"></a>读取文件信息 stat()</h3><p>fs.stat(path, callba)读取文件相关信息，包括创建时间，内存大小等，常用来判断是一个文件还是一个文件夹</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">fs.stat(<span class="string">'./testDir'</span>, (err, stats) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">    <span class="keyword">if</span> (stats.isFile()) &#123; </span><br><span class="line">        <span class="comment">// 如果路径是文件则执行  </span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (stats.isDirectory()) &#123;</span><br><span class="line">        <span class="comment">// 如果路径是文件夹则执行</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="读取层级目录"><a href="#读取层级目录" class="headerlink" title="读取层级目录"></a>读取层级目录</h3><h3 id="监听文件-watch"><a href="#监听文件-watch" class="headerlink" title="监听文件 watch()"></a>监听文件 watch()</h3><p>fs.watch(filename[, options][, listener]) 监听文件的改变，删除，创建。<br>文件内容改变对应的事件为 change，创建删除对应的事件是rename </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fs.watch(<span class="string">'./testDir'</span>, (eventType, filename) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`事件类型：<span class="subst">$&#123;eventType&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">if</span> (filename) &#123; <span class="comment">// 不同操作系统，filename不一定存在</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`提供的文件名: <span class="subst">$&#123;filename&#125;</span>`</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'未提供文件名'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="写入-文件，目录"><a href="#写入-文件，目录" class="headerlink" title="写入-文件，目录"></a>写入-文件，目录</h2><h3 id="写入文件-writeFile"><a href="#写入文件-writeFile" class="headerlink" title="写入文件 writeFile"></a>写入文件 writeFile</h3><p>fs.writeFile(file, data[, options], callback) 第一个参数为路径，路径不存在则报错；第二个参数为写入的内容；第三个参数为编码默认为’utf-8’</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fs.writeFile(<span class="string">'./test.js'</span>, <span class="string">'some data'</span>, err =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'write ok'</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建文件夹-mkdir"><a href="#创建文件夹-mkdir" class="headerlink" title="创建文件夹 mkdir()"></a>创建文件夹 mkdir()</h3><p>fs.mkdir(path[,mode],callback)创建文件夹。第二个参数为操作目录的权限制，可选，默认0o777,表示所有人可读，可写，可执行。<br>只能创建一层文件目录，创建多层目录可以用递归的方式。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fs.mkdir(<span class="string">'./testDir'</span>, err =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="读写大文件"><a href="#读写大文件" class="headerlink" title="读写大文件"></a>读写大文件</h3><p>createReadStream() createWriteStream() 读写大内存文件，搭配只用使用这两个方式会更有效率。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> readStream = fs.createReadStream(<span class="string">'./test.js'</span>);</span><br><span class="line"><span class="keyword">let</span> writeStream = fs.createWriteStream(<span class="string">'./copy.js'</span>);</span><br><span class="line">readStream.on(<span class="string">'data'</span>, data =&gt; &#123; </span><br><span class="line">    writeStream.write(); <span class="comment">// 读取流监听读取的数据，实时写入 </span></span><br><span class="line">&#125;); </span><br><span class="line">readStream.on(<span class="string">'error'</span>, err =&gt; &#123; <span class="keyword">throw</span> err; &#125;); <span class="comment">// 读取流监听错误</span></span><br><span class="line">readStream.on(<span class="string">'end'</span>, () =&gt; &#123; </span><br><span class="line">    writeStream.end(); <span class="comment">// 读取流监听读取完成事件</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>可以搭配pipe方法更方便实现大文件读写</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> readStream = fs.createReadStream(<span class="string">'./test.js'</span>);</span><br><span class="line"><span class="keyword">let</span> writeStream = fs.createWriteStream(<span class="string">'./copy.js'</span>);</span><br><span class="line">readStream.pipe(writeStream); <span class="comment">// pipe像管道般将数据流导入另一个文件</span></span><br><span class="line">readStream.on(<span class="string">'end'</span>, () =&gt; &#123; </span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'write done!'</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nodejs%E6%A8%A1%E5%9D%97/" rel="tag"># nodejs模块</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2017/12/27/%E4%B9%A6%E5%86%99%E6%98%AF%E4%B8%BA%E4%BA%86%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%80%9D%E8%80%83/" rel="next" title="书写是为了更好的思考">
+                  <i class="fa fa-chevron-left"></i> 书写是为了更好的思考
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2018/01/08/%E8%BF%9E%E6%8E%A5mongodb/" rel="prev" title="使用mongoose连接mongodb">
+                  使用mongoose连接mongodb <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#读取-文件，目录"><span class="nav-number">1.</span> <span class="nav-text">读取-文件，目录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#异步读文件-readFile"><span class="nav-number">1.1.</span> <span class="nav-text">异步读文件 readFile()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步读文件-readFileSync"><span class="nav-number">1.2.</span> <span class="nav-text">同步读文件 readFileSync()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取一级子目录-readdir"><span class="nav-number">1.3.</span> <span class="nav-text">读取一级子目录 readdir()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取文件信息-stat"><span class="nav-number">1.4.</span> <span class="nav-text">读取文件信息 stat()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取层级目录"><span class="nav-number">1.5.</span> <span class="nav-text">读取层级目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监听文件-watch"><span class="nav-number">1.6.</span> <span class="nav-text">监听文件 watch()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写入-文件，目录"><span class="nav-number">2.</span> <span class="nav-text">写入-文件，目录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#写入文件-writeFile"><span class="nav-number">2.1.</span> <span class="nav-text">写入文件 writeFile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建文件夹-mkdir"><span class="nav-number">2.2.</span> <span class="nav-text">创建文件夹 mkdir()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读写大文件"><span class="nav-number">2.3.</span> <span class="nav-text">读写大文件</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kiwi Yan"
+      src="/images/me.jpg">
+  <p class="site-author-name" itemprop="name">Kiwi Yan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kiwiyan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kiwiyan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kiwi Yan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="90" alpha="0.5" zIndex="-1" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'OPx3IaJ1jXnyKhsbInJssqF4-gzGzoHsz',
+    appKey: 'z7pFGlWc8SIl4L5OPDAatBfy',
+    placeholder: "Just go go",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>
