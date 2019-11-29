@@ -179,6 +179,119 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/21/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.jpg">
+      <meta itemprop="name" content="Kiwi Yan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi Yan's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/21/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">浏览器渲染原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-11-21 19:53:31 / Modified: 20:18:38" itemprop="dateCreated datePublished" datetime="2019-11-21T19:53:31+08:00">2019-11-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/11/21/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/11/21/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="渲染流程"><a href="#渲染流程" class="headerlink" title="渲染流程"></a>渲染流程</h2><h3 id="渲染过程"><a href="#渲染过程" class="headerlink" title="渲染过程"></a>渲染过程</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"theme.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span>geekbang com<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">'foo.js'</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span>geekbang com<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img alt data-src="/images/2019/11/render.png"></p>
+<h4 id="HTML是加载完才开始解析的吗？"><a href="#HTML是加载完才开始解析的吗？" class="headerlink" title="HTML是加载完才开始解析的吗？"></a>HTML是加载完才开始解析的吗？</h4><p>网络进程和渲染进程之间会建立一个数据管道，网络加载了多少html数据，html解析器便解析多少内容。</p>
+<h2 id="DOM和CSSOM"><a href="#DOM和CSSOM" class="headerlink" title="DOM和CSSOM"></a>DOM和CSSOM</h2><h3 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h3><h3 id="CSSOM"><a href="#CSSOM" class="headerlink" title="CSSOM"></a>CSSOM</h3><p>渲染引擎也是无法直接理解 CSS 文件内容的，所以需要将其解析成渲染引擎能够理解的结构，这个结构就是 CSSOM。<br>即：</p>
+<ul>
+<li>CSSOM是CSS Object Model的缩写</li>
+<li>CSSOM是一个建立在web页面上的 CSS 样式的映射</li>
+<li>它和DOM类似，但是只针对CSS而不是HTML</li>
+<li>浏览器将DOM和CSSOM结合来渲染web页面</li>
+</ul>
+<h2 id="渲染阻塞"><a href="#渲染阻塞" class="headerlink" title="渲染阻塞"></a>渲染阻塞</h2><h3 id="js阻塞"><a href="#js阻塞" class="headerlink" title="js阻塞"></a>js阻塞</h3><p>js代码<code>执行</code>会阻塞DOM树的构建。解析过程中遇到js代码时，会先执行完js，然后接着将html解析成DOM树。</p>
+<p>js外链文件<code>加载</code>的过程也会阻塞DOM的解析。</p>
+<h3 id="chrome预解析"><a href="#chrome预解析" class="headerlink" title="chrome预解析"></a>chrome预解析</h3><p>即对js和css文件的预加载。当渲染引擎收到字节流之后，会开启一个预解析线程，用来分析 HTML 文件中包含的 JavaScript、CSS 等相关文件，解析到相关文件之后，预解析线程会提前下载这些文件。</p>
+<h4 id="async和defer异步加载"><a href="#async和defer异步加载" class="headerlink" title="async和defer异步加载"></a>async和defer异步加载</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="number">1.</span> 没有defer和<span class="keyword">async</span> </span><br><span class="line">&lt;script src=<span class="string">"script.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line">没有 defer 或 <span class="keyword">async</span>，浏览器会立即加载并执行指定的脚本，“立即”指的是在渲染该 script 标签之下的文档元素之前，也就是说不等待后续载入的文档元素，读到就加载并执行。</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> <span class="keyword">async</span></span><br><span class="line">&lt;script <span class="keyword">async</span> src=<span class="string">"script.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line">有 <span class="keyword">async</span>，加载和渲染后续文档元素的过程将和 script.js 的加载与执行并行进行（异步）。</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span> defer</span><br><span class="line">&lt;script defer src=<span class="string">"script.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line"> 有 defer，加载后续文档元素的过程将和 script.js 的加载并行进行（异步），但是 script.js 的执行要在所有元素解析完成之后，DOMContentLoaded 事件触发之前完成。</span><br></pre></td></tr></table></figure>
+<p>执行如图所示：<br>蓝色表示网络加载js而文件，红色表示js执行，绿色表示HTML解析DOM树的过程<br><img alt data-src="/images/2019/11/script_run.jpeg"></p>
+<h4 id="页面解析的几个生命周期"><a href="#页面解析的几个生命周期" class="headerlink" title="页面解析的几个生命周期"></a>页面解析的几个生命周期</h4><p>HTML页面的生命周期有以下三个重要事件：<br><code>DOMContentLoaded</code> —— 浏览器已经完全加载了 HTML，DOM 树已经构建完毕，但是像是 &lt;img&gt; 和样式表等外部资源可能并没有下载完毕。<br><code>load</code> —— 浏览器已经加载了所有的资源（图像，样式表等）。<br><code>beforeunload/unload</code> —— 当用户离开页面的时候触发。</p>
+<p>每个事件都有特定的用途:<br><code>DOMContentLoaded</code> —— DOM 加载完毕，所以 JS 可以访问所有 DOM 节点，初始化界面。<br><code>load</code> —— 附加资源已经加载完毕，可以在此事件触发时获得图像的大小（如果没有被在 HTML/CSS 中指定）<br><code>beforeunload/unload</code> —— 用户正在离开页面：可以询问用户是否保存了更改以及是否确定要离开页面。</p>
+<h3 id="css阻塞"><a href="#css阻塞" class="headerlink" title="css阻塞"></a>css阻塞</h3><p>CSSOM构建成功后才能执行js脚本。即CSS的加载和CSSOM的构建也可能阻塞DOM树的生成。</p>
+<p>如果有css和js的外链文件,不管 CSS 文件和 JavaScript 文件谁先到达，都要先等到 CSS 文件下载完成并生成 CSSOM，然后再执行 JavaScript 脚本，最后再继续构建 DOM，构建布局树，绘制页面。</p>
+<h2 id="优化方式"><a href="#优化方式" class="headerlink" title="优化方式"></a>优化方式</h2><h3 id="应对的优化方式"><a href="#应对的优化方式" class="headerlink" title="应对的优化方式"></a>应对的优化方式</h3><p>对页面进行优化，其实有3个过程</p>
+<h4 id="1-请求发出，到浏览区获取响应数据期间的优化："><a href="#1-请求发出，到浏览区获取响应数据期间的优化：" class="headerlink" title="1. 请求发出，到浏览区获取响应数据期间的优化："></a>1. 请求发出，到浏览区获取响应数据期间的优化：</h4><ul>
+<li>压缩文件-客户端混淆压缩和服务端gzip压缩</li>
+<li>客户端缓存</li>
+<li>使用CDN引用资源</li>
+</ul>
+<h4 id="2-获取响应数据到生成DOM，CSSOM，布局树，准备进行首次渲染的过程的优化："><a href="#2-获取响应数据到生成DOM，CSSOM，布局树，准备进行首次渲染的过程的优化：" class="headerlink" title="2. 获取响应数据到生成DOM，CSSOM，布局树，准备进行首次渲染的过程的优化："></a>2. 获取响应数据到生成DOM，CSSOM，布局树，准备进行首次渲染的过程的优化：</h4><ul>
+<li>script标签放在body标签末尾</li>
+<li>将一些不需要在解析 HTML 阶段使用的 JavaScript 标记上 sync 或者 defer</li>
+<li>对于大的css文件，通过媒体查询属性，将样式文件拆分，只在制定场合加载指定的文件。如  <code>&lt;link rel=&quot;stylesheet&quot; media=&quot;(max-width: 800px)&quot; href=&quot;example.css&quot; /&gt;</code></li>
+</ul>
+<h4 id="3-页面的绘制期间的优化："><a href="#3-页面的绘制期间的优化：" class="headerlink" title="3. 页面的绘制期间的优化："></a>3. 页面的绘制期间的优化：</h4>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/%E5%BD%93map%E9%81%8D%E5%8E%86%E4%B8%8Easync%E7%9B%B8%E9%81%87%E6%97%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1063,103 +1176,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/03/nodejs%E4%B9%8BBuffer/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/me.jpg">
-      <meta itemprop="name" content="Kiwi Yan">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Kiwi Yan's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/03/nodejs%E4%B9%8BBuffer/" class="post-title-link" itemprop="url">nodejs之Buffer</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-04-03 20:53:45" itemprop="dateCreated datePublished" datetime="2018-04-03T20:53:45+08:00">2018-04-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-15 16:36:00" itemprop="dateModified" datetime="2019-11-15T16:36:00+08:00">2019-11-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/nodejs/" itemprop="url" rel="index">
-                    <span itemprop="name">nodejs</span>
-                  </a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/2018/04/03/nodejs%E4%B9%8BBuffer/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018/04/03/nodejs%E4%B9%8BBuffer/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="什么是Buffer？"><a href="#什么是Buffer？" class="headerlink" title="什么是Buffer？"></a>什么是Buffer？</h3><p>Buffer 是 Node.js 中用于处理二进制数据的类, 其中与 IO 相关的操作 (网络请请求/文件读写等) 均基于 Buffer。<br>Buffer 类的实例非常类似整数数组, 但其大小是固定不变的, 并且其内存在 V8 堆栈外分配原始内存空间。 Buffer 类的实例创建之后, 其所占用的内存大小就不能再进行调整。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/04/03/nodejs%E4%B9%8BBuffer/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1210,20 +1226,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
