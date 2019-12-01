@@ -47,17 +47,17 @@
   };
 </script>
 
-  <meta name="description" content="渲染流程渲染过程12345678910&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;    &amp;lt;link href=&quot;theme.css&quot; rel=&quot;stylesheet&quot;&amp;gt;&amp;lt;&#x2F;head&amp;gt;&amp;lt;body&amp;gt;    &amp;lt;div&amp;gt;geekbang com&amp;lt;&#x2F;div&amp;gt;    &amp;lt;script src=&amp;apos;foo.js&amp;apos;&amp;gt;&amp;lt;&#x2F;script&amp;">
+  <meta name="description" content="渲染流程渲染过程">
 <meta name="keywords" content="性能优化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浏览器渲染原理">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;21&#x2F;%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E5%8E%9F%E7%90%86&#x2F;index.html">
 <meta property="og:site_name" content="Kiwi Yan&#39;s Blog">
-<meta property="og:description" content="渲染流程渲染过程12345678910&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;    &amp;lt;link href=&quot;theme.css&quot; rel=&quot;stylesheet&quot;&amp;gt;&amp;lt;&#x2F;head&amp;gt;&amp;lt;body&amp;gt;    &amp;lt;div&amp;gt;geekbang com&amp;lt;&#x2F;div&amp;gt;    &amp;lt;script src=&amp;apos;foo.js&amp;apos;&amp;gt;&amp;lt;&#x2F;script&amp;">
+<meta property="og:description" content="渲染流程渲染过程">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;11&#x2F;render.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;11&#x2F;script_run.jpeg">
-<meta property="og:updated_time" content="2019-11-29T06:51:35.360Z">
+<meta property="og:updated_time" content="2019-12-01T09:15:30.902Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;11&#x2F;render.png">
 
@@ -216,7 +216,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-29 14:51:35" itemprop="dateModified" datetime="2019-11-29T14:51:35+08:00">2019-11-29</time>
+                <time title="Modified: 2019-12-01 17:15:30" itemprop="dateModified" datetime="2019-12-01T17:15:30+08:00">2019-12-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -255,9 +255,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="渲染流程"><a href="#渲染流程" class="headerlink" title="渲染流程"></a>渲染流程</h2><h3 id="渲染过程"><a href="#渲染过程" class="headerlink" title="渲染过程"></a>渲染过程</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"theme.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span>geekbang com<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">'foo.js'</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span>geekbang com<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><img alt data-src="/images/2019/11/render.png"></p>
+        <h2 id="渲染流程"><a href="#渲染流程" class="headerlink" title="渲染流程"></a>渲染流程</h2><h3 id="渲染过程"><a href="#渲染过程" class="headerlink" title="渲染过程"></a>渲染过程</h3><p><img alt data-src="/images/2019/11/render.png"></p>
 <a id="more"></a>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"theme.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span>geekbang com<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">'foo.js'</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span>geekbang com<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <h4 id="HTML是加载完才开始解析的吗？"><a href="#HTML是加载完才开始解析的吗？" class="headerlink" title="HTML是加载完才开始解析的吗？"></a>HTML是加载完才开始解析的吗？</h4><p>网络进程和渲染进程之间会建立一个数据管道，网络加载了多少html数据，html解析器便解析多少内容。</p>
 <h2 id="DOM和CSSOM"><a href="#DOM和CSSOM" class="headerlink" title="DOM和CSSOM"></a>DOM和CSSOM</h2><h3 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h3><h3 id="CSSOM"><a href="#CSSOM" class="headerlink" title="CSSOM"></a>CSSOM</h3><p>渲染引擎也是无法直接理解 CSS 文件内容的，所以需要将其解析成渲染引擎能够理解的结构，这个结构就是 CSSOM。<br>即：</p>
 <ul>

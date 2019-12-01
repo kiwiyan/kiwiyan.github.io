@@ -56,7 +56,7 @@
 <meta property="og:description" content="队列概念：类似数组，不同的是队列只能在队尾插入元素，在队首删除元素。一种“先入先出”(FIFO)的数据结构，比如排队。特点：只能在队尾删除元素，队首删除元素(优先队列例外)用途：操作系统进程，打印任务池，银行系统的排队系统等 插入新元素叫入队，删除操作叫出队。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;12&#x2F;queue1.jpg">
-<meta property="og:updated_time" content="2019-12-01T09:08:02.170Z">
+<meta property="og:updated_time" content="2019-12-01T09:12:08.793Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;12&#x2F;queue1.jpg">
 
@@ -209,7 +209,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2019-12-01 10:16:23 / Modified: 17:08:02" itemprop="dateCreated datePublished" datetime="2019-12-01T10:16:23+08:00">2019-12-01</time>
+              <time title="Created: 2019-12-01 10:16:23 / Modified: 17:12:08" itemprop="dateCreated datePublished" datetime="2019-12-01T10:16:23+08:00">2019-12-01</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -265,7 +265,7 @@
 <p>现实生活中排队，经常有优先级的情况，比如vip，急诊科等。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 出队时可使用数组的splice方法，其他地方同普通queue</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">QueueElement</span> (<span class="params">element, priority</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.element = element;</span><br><span class="line">  <span class="keyword">this</span>.priority = priority;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="循环队列"><a href="#循环队列" class="headerlink" title="循环队列"></a>循环队列</h4><p>比如击鼓传-围成一个圈，快速传递花给临旁人，某一刻传花停止，花在谁手里，谁就退出游戏，直到只剩一个人。</p>
+<h4 id="循环队列"><a href="#循环队列" class="headerlink" title="循环队列"></a>循环队列</h4><p>比如击鼓传花-围成一个圈，快速传递花给临旁人，某一刻传花停止，花在谁手里，谁就退出游戏，直到只剩一个人。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模拟击鼓传花游戏</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hotPotato</span> (<span class="params">nameList, num</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">let</span> queue = <span class="keyword">new</span> Queue();</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;nameList.length; i++)&#123;</span><br><span class="line">    queue.enqueue(nameList[i]);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> eliminated = <span class="string">''</span>;</span><br><span class="line">  <span class="keyword">while</span> (queue.size() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;num; i++)&#123;</span><br><span class="line">      queue.enqueue(queue.dequeue()); <span class="comment">// 传花过程，队首出队，加入队尾</span></span><br><span class="line">    &#125;</span><br><span class="line">    eliminated = queue.dequeue(); <span class="comment">// 停止传花，即移除此刻队首元素</span></span><br><span class="line">    <span class="built_in">console</span>.log(eliminated + <span class="string">'在击鼓传花游戏中被淘汰'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> queue.dequeue();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> names = [<span class="string">'John'</span>,<span class="string">'Jack'</span>,<span class="string">'Camila'</span>,<span class="string">'Ingrid'</span>,<span class="string">'Carl'</span>];</span><br><span class="line"><span class="keyword">let</span> winner = hotPotato(names, <span class="number">7</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'The winner is: '</span> + winner);</span><br></pre></td></tr></table></figure>
 
 <h4 id="javascript任务队列"><a href="#javascript任务队列" class="headerlink" title="javascript任务队列"></a>javascript任务队列</h4><p>每当打开一个浏览器标签，都会创建一个队列。每个标签都是单线程处理所有任务，它被称为事件循环。<br>浏览器要处理html渲染，执行js代码，用户交互，异步操作等操作，正是用到事件循环的队列。</p>
