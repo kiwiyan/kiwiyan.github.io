@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="栈概念：类似数组的列表，一种“后入先出”(LIFO)的数据结构，比如一摞书。特点：只能在栈顶添加和删除元素用途：常用在编译器和内存中保存变量，方法调用 在栈里，新元素都靠近栈顶，旧元素都接近栈底。">
+<meta name="keywords" content="数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="栈">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;01&#x2F;%E6%A0%88&#x2F;index.html">
+<meta property="og:site_name" content="Kiwi Yan&#39;s Blog">
+<meta property="og:description" content="栈概念：类似数组的列表，一种“后入先出”(LIFO)的数据结构，比如一摞书。特点：只能在栈顶添加和删除元素用途：常用在编译器和内存中保存变量，方法调用 在栈里，新元素都靠近栈顶，旧元素都接近栈底。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;12&#x2F;stack1.jpg">
+<meta property="og:updated_time" content="2019-12-01T09:05:23.306Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;12&#x2F;stack1.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/01/%E6%A0%88/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>栈 | Kiwi Yan's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Kiwi Yan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">what pains us trains us.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/01/%E6%A0%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.jpg">
+      <meta itemprop="name" content="Kiwi Yan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi Yan's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          栈
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-12-01 08:31:22 / Modified: 17:05:23" itemprop="dateCreated datePublished" datetime="2019-12-01T08:31:22+08:00">2019-12-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机基础</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/12/01/%E6%A0%88/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/12/01/%E6%A0%88/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p><img alt data-src="/images/2019/12/stack1.jpg"><br>概念：类似数组的列表，一种“后入先出”(LIFO)的数据结构，比如一摞书。<br>特点：只能在栈顶添加和删除元素<br>用途：常用在编译器和内存中保存变量，方法调用</p>
+<p>在栈里，新元素都靠近<code>栈顶</code>，旧元素都接近<code>栈底</code>。</p>
+<a id="more"></a>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
+<li>count 元素数量</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><ul>
+<li>push(element(s)):添加一个(或几个)新元素到栈顶。</li>
+<li>pop():移除栈顶的元素，同时返回被移除的元素。</li>
+<li>peek():返回栈顶的元素，不对栈做任何修改(这个方法不会移除栈顶的元素，仅仅返回它)。</li>
+<li>isEmpty():如果栈里没有任何元素就返回true，否则返回false。</li>
+<li>clear():移除栈里的所有元素。</li>
+<li>size():返回栈里的元素个数。这个方法和数组的length属性很类似</li>
+</ul>
+<h3 id="es6实现栈"><a href="#es6实现栈" class="headerlink" title="es6实现栈"></a>es6实现栈</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Stack</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">this</span>.count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">this</span>.items = &#123;&#125;; <span class="comment">// 这里可优化，items不想暴露给用户，需要时私有的。可以借助 WeakMap优化</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  push(element) &#123;</span><br><span class="line">    <span class="keyword">this</span>.items[<span class="keyword">this</span>.count] = element;</span><br><span class="line">    <span class="keyword">this</span>.count++;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  pop() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.isEmpty()) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.count--;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">this</span>.items[<span class="keyword">this</span>.count];</span><br><span class="line">    <span class="keyword">delete</span> <span class="keyword">this</span>.items[<span class="keyword">this</span>.count];</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  peek() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.isEmpty()) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.items[<span class="keyword">this</span>.count - <span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  isEmpty() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.count === <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  size() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.count;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  clear() &#123;</span><br><span class="line">    <span class="comment">/* while (!this.isEmpty()) &#123;</span></span><br><span class="line"><span class="comment">        this.pop();</span></span><br><span class="line"><span class="comment">      &#125; */</span></span><br><span class="line">    <span class="keyword">this</span>.items = &#123;&#125;;</span><br><span class="line">    <span class="keyword">this</span>.count = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  toString() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.isEmpty()) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> objString = <span class="string">`<span class="subst">$&#123;<span class="keyword">this</span>.items[<span class="number">0</span>]&#125;</span>`</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; <span class="keyword">this</span>.count; i++) &#123;</span><br><span class="line">      objString = <span class="string">`<span class="subst">$&#123;objString&#125;</span>,<span class="subst">$&#123;<span class="keyword">this</span>.items[i]&#125;</span>`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> objString;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="应用举例"><a href="#应用举例" class="headerlink" title="应用举例"></a>应用举例</h3><h4 id="转换成2进制"><a href="#转换成2进制" class="headerlink" title="转换成2进制"></a>转换成2进制</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">decimalToBinary</span>(<span class="params">decNumber</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> remStack = <span class="keyword">new</span> Stack();</span><br><span class="line">  <span class="keyword">let</span> number = decNumber;</span><br><span class="line">  <span class="keyword">let</span> rem;</span><br><span class="line">  <span class="keyword">let</span> binaryString = <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (number &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    rem = <span class="built_in">Math</span>.floor(number % <span class="number">2</span>); <span class="comment">// 可能有浮点值</span></span><br><span class="line">    remStack.push(rem);</span><br><span class="line">    number = <span class="built_in">Math</span>.floor(number / <span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (!remStack.isEmpty()) &#123;</span><br><span class="line">    binaryString += remStack.pop().toString();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> binaryString;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="平衡圆括号"><a href="#平衡圆括号" class="headerlink" title="平衡圆括号"></a>平衡圆括号</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">balancesSymbols</span>(<span class="params">symbols</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> stack = <span class="keyword">new</span> Stack();</span><br><span class="line">  <span class="keyword">const</span> opens = <span class="string">'([&#123;'</span>;</span><br><span class="line">  <span class="keyword">const</span> closers = <span class="string">')]&#125;'</span>;</span><br><span class="line">  <span class="keyword">let</span> balanced = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">let</span> index = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">let</span> symbol;</span><br><span class="line">  <span class="keyword">let</span> top;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (index &lt; symbols.length &amp;&amp; balanced) &#123;</span><br><span class="line">    symbol = symbols[index];</span><br><span class="line">    <span class="keyword">if</span> (opens.indexOf(symbol) &gt;= <span class="number">0</span>) &#123; <span class="comment">// 遍历字符串，遇到左侧括号则先入栈</span></span><br><span class="line">      stack.push(symbol);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (stack.isEmpty()) &#123; <span class="comment">// 右侧括号不存在，则不平衡，结束</span></span><br><span class="line">      balanced = <span class="literal">false</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      top = stack.pop(); <span class="comment">// 遇到右侧括号，先出栈，和当前字符比较，然后看是否和右侧括号匹配</span></span><br><span class="line">      <span class="keyword">if</span> (!(opens.indexOf(top) === closers.indexOf(symbol))) &#123;</span><br><span class="line">        balanced = <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    index++;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> balanced &amp;&amp; stack.isEmpty();</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'&#123;([])&#125;'</span>, balancesSymbols(<span class="string">'&#123;([])&#125;'</span>)); <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'&#123;&#123;([][])&#125;()&#125;'</span>, balancesSymbols(<span class="string">'&#123;&#123;([][])&#125;()&#125;'</span>)); <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'[&#123;()]'</span>, balancesSymbols(<span class="string">'[&#123;()]'</span>)); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<h4 id="汉诺塔"><a href="#汉诺塔" class="headerlink" title="汉诺塔"></a>汉诺塔</h4><p><code>有3根针，一叠盘子，盘子从大到小以此叠放并穿在针上。一次可移动一个盘子到另一根针上，小盘子需在大盘子上，如何将整个盘子全部移动到另一根针上？</code></p>
+<p>利用栈的递归。比如，4个盘子的话，可以先无视最大的盘子，整体移动3个盘子比较容易，然后将第4个盘子放在另一个针，再整体移动这3个盘子就行。5个盘子的话，同上。</p>
+<h4 id="回文"><a href="#回文" class="headerlink" title="回文"></a>回文</h4><p><code>回文即正序和倒序的字符串一样，利用栈很容易判断</code></p>
+<h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><p><code>函数递归调用用的就是栈</code></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/30/2019-Final-Learn/" rel="next" title="2019 Final Learn">
+                  <i class="fa fa-chevron-left"></i> 2019 Final Learn
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/12/01/%E9%98%9F%E5%88%97/" rel="prev" title="队列">
+                  队列 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#栈"><span class="nav-number">1.</span> <span class="nav-text">栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性"><span class="nav-number">1.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">1.2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#es6实现栈"><span class="nav-number">1.3.</span> <span class="nav-text">es6实现栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用举例"><span class="nav-number">1.4.</span> <span class="nav-text">应用举例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#转换成2进制"><span class="nav-number">1.4.1.</span> <span class="nav-text">转换成2进制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#平衡圆括号"><span class="nav-number">1.4.2.</span> <span class="nav-text">平衡圆括号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#汉诺塔"><span class="nav-number">1.4.3.</span> <span class="nav-text">汉诺塔</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#回文"><span class="nav-number">1.4.4.</span> <span class="nav-text">回文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#递归"><span class="nav-number">1.4.5.</span> <span class="nav-text">递归</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kiwi Yan"
+      src="/images/me.jpg">
+  <p class="site-author-name" itemprop="name">Kiwi Yan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kiwiyan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kiwiyan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kiwi Yan</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="98" alpha="0.3" zIndex="-1" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'OPx3IaJ1jXnyKhsbInJssqF4-gzGzoHsz',
+    appKey: 'z7pFGlWc8SIl4L5OPDAatBfy',
+    placeholder: "Just go go",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>

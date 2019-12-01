@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"right","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="队列概念：类似数组，不同的是队列只能在队尾插入元素，在队首删除元素。一种“先入先出”(FIFO)的数据结构，比如排队。特点：只能在队尾删除元素，队首删除元素(优先队列例外)用途：操作系统进程，打印任务池，银行系统的排队系统等 插入新元素叫入队，删除操作叫出队。">
+<meta name="keywords" content="数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="队列">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;01&#x2F;%E9%98%9F%E5%88%97&#x2F;index.html">
+<meta property="og:site_name" content="Kiwi Yan&#39;s Blog">
+<meta property="og:description" content="队列概念：类似数组，不同的是队列只能在队尾插入元素，在队首删除元素。一种“先入先出”(FIFO)的数据结构，比如排队。特点：只能在队尾删除元素，队首删除元素(优先队列例外)用途：操作系统进程，打印任务池，银行系统的排队系统等 插入新元素叫入队，删除操作叫出队。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;12&#x2F;queue1.jpg">
+<meta property="og:updated_time" content="2019-12-01T09:08:02.170Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;12&#x2F;queue1.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/01/%E9%98%9F%E5%88%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>队列 | Kiwi Yan's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Kiwi Yan's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">what pains us trains us.</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/01/%E9%98%9F%E5%88%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/me.jpg">
+      <meta itemprop="name" content="Kiwi Yan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiwi Yan's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          队列
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-12-01 10:16:23 / Modified: 17:08:02" itemprop="dateCreated datePublished" datetime="2019-12-01T10:16:23+08:00">2019-12-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机基础</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2019/12/01/%E9%98%9F%E5%88%97/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/12/01/%E9%98%9F%E5%88%97/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h2><p><img alt data-src="/images/2019/12/queue1.jpg"><br>概念：类似数组，不同的是队列只能在队尾插入元素，在队首删除元素。一种“先入先出”(FIFO)的数据结构，比如排队。<br>特点：只能在队尾删除元素，队首删除元素(优先队列例外)<br>用途：操作系统进程，打印任务池，银行系统的排队系统等</p>
+<p>插入新元素叫<code>入队</code>，删除操作叫<code>出队</code>。</p>
+<a id="more"></a>
+<h3 id="属性方法"><a href="#属性方法" class="headerlink" title="属性方法"></a>属性方法</h3><ul>
+<li>enqueue() 向队尾添加一个或多个元素</li>
+<li>dequeue() 移除队首第一位，并返回第一位</li>
+<li>front() 返回队首第一项，不作任何操作</li>
+<li>isEmpty() 是否不包含任何元素，返回boolean</li>
+<li>size() 元素个数</li>
+</ul>
+<p>js数组很灵活，也可直接用js的数组来实现队列，可用push来代替enqueue入队，用shift来代替dequeue出队。</p>
+<h3 id="es6实现"><a href="#es6实现" class="headerlink" title="es6实现"></a>es6实现</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Queue</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">this</span>.count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">this</span>.lowestCount = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">this</span>.items = &#123;&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  enqueue(element) &#123;</span><br><span class="line">    <span class="keyword">this</span>.items[<span class="keyword">this</span>.count] = element;</span><br><span class="line">    <span class="keyword">this</span>.count++;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  dequeue() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.isEmpty()) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="keyword">this</span>.items[<span class="keyword">this</span>.lowestCount];</span><br><span class="line">    <span class="keyword">delete</span> <span class="keyword">this</span>.items[<span class="keyword">this</span>.lowestCount];</span><br><span class="line">    <span class="keyword">this</span>.lowestCount++;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  peek() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.isEmpty()) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.items[<span class="keyword">this</span>.lowestCount];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  isEmpty() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.size() === <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  clear() &#123;</span><br><span class="line">    <span class="keyword">this</span>.items = &#123;&#125;;</span><br><span class="line">    <span class="keyword">this</span>.count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">this</span>.lowestCount = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  size() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.count - <span class="keyword">this</span>.lowestCount;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  toString() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.isEmpty()) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> objString = <span class="string">`<span class="subst">$&#123;<span class="keyword">this</span>.items[<span class="keyword">this</span>.lowestCount]&#125;</span>`</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="keyword">this</span>.lowestCount + <span class="number">1</span>; i &lt; <span class="keyword">this</span>.count; i++) &#123;</span><br><span class="line">      objString = <span class="string">`<span class="subst">$&#123;objString&#125;</span>,<span class="subst">$&#123;<span class="keyword">this</span>.items[i]&#125;</span>`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> objString;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="举例应用"><a href="#举例应用" class="headerlink" title="举例应用"></a>举例应用</h3><h4 id="优先队列"><a href="#优先队列" class="headerlink" title="优先队列"></a>优先队列</h4><p>和普通队列相比，出队顺序和入队顺序无关，元素优先级高的先出队。</p>
+<p>现实生活中排队，经常有优先级的情况，比如vip，急诊科等。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 出队时可使用数组的splice方法，其他地方同普通queue</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">QueueElement</span> (<span class="params">element, priority</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.element = element;</span><br><span class="line">  <span class="keyword">this</span>.priority = priority;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="循环队列"><a href="#循环队列" class="headerlink" title="循环队列"></a>循环队列</h4><p>比如击鼓传-围成一个圈，快速传递花给临旁人，某一刻传花停止，花在谁手里，谁就退出游戏，直到只剩一个人。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模拟击鼓传花游戏</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hotPotato</span> (<span class="params">nameList, num</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">let</span> queue = <span class="keyword">new</span> Queue();</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;nameList.length; i++)&#123;</span><br><span class="line">    queue.enqueue(nameList[i]);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> eliminated = <span class="string">''</span>;</span><br><span class="line">  <span class="keyword">while</span> (queue.size() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;num; i++)&#123;</span><br><span class="line">      queue.enqueue(queue.dequeue()); <span class="comment">// 传花过程，队首出队，加入队尾</span></span><br><span class="line">    &#125;</span><br><span class="line">    eliminated = queue.dequeue(); <span class="comment">// 停止传花，即移除此刻队首元素</span></span><br><span class="line">    <span class="built_in">console</span>.log(eliminated + <span class="string">'在击鼓传花游戏中被淘汰'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> queue.dequeue();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> names = [<span class="string">'John'</span>,<span class="string">'Jack'</span>,<span class="string">'Camila'</span>,<span class="string">'Ingrid'</span>,<span class="string">'Carl'</span>];</span><br><span class="line"><span class="keyword">let</span> winner = hotPotato(names, <span class="number">7</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'The winner is: '</span> + winner);</span><br></pre></td></tr></table></figure>
+
+<h4 id="javascript任务队列"><a href="#javascript任务队列" class="headerlink" title="javascript任务队列"></a>javascript任务队列</h4><p>每当打开一个浏览器标签，都会创建一个队列。每个标签都是单线程处理所有任务，它被称为事件循环。<br>浏览器要处理html渲染，执行js代码，用户交互，异步操作等操作，正是用到事件循环的队列。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/12/01/%E6%A0%88/" rel="next" title="栈">
+                  <i class="fa fa-chevron-left"></i> 栈
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#队列"><span class="nav-number">1.</span> <span class="nav-text">队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性方法"><span class="nav-number">1.1.</span> <span class="nav-text">属性方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#es6实现"><span class="nav-number">1.2.</span> <span class="nav-text">es6实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#举例应用"><span class="nav-number">1.3.</span> <span class="nav-text">举例应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优先队列"><span class="nav-number">1.3.1.</span> <span class="nav-text">优先队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#循环队列"><span class="nav-number">1.3.2.</span> <span class="nav-text">循环队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#javascript任务队列"><span class="nav-number">1.3.3.</span> <span class="nav-text">javascript任务队列</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kiwi Yan"
+      src="/images/me.jpg">
+  <p class="site-author-name" itemprop="name">Kiwi Yan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kiwiyan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kiwiyan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kiwi Yan</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="98" alpha="0.3" zIndex="-1" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'OPx3IaJ1jXnyKhsbInJssqF4-gzGzoHsz',
+    appKey: 'z7pFGlWc8SIl4L5OPDAatBfy',
+    placeholder: "Just go go",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+</body>
+</html>
