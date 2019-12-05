@@ -55,8 +55,10 @@
 <meta property="og:site_name" content="Kiwi Yan&#39;s Blog">
 <meta property="og:description" content="集合是由一组无序且唯一的项组成。 集合中的元素称为成员。 常见的集合操作有取交集，并集，差集，判断子集等。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-02T11:38:40.089Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;12&#x2F;set.jpg">
+<meta property="og:updated_time" content="2019-12-05T02:24:25.752Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;images&#x2F;2019&#x2F;12&#x2F;set.jpg">
 
 <link rel="canonical" href="http://yoursite.com/2019/12/02/%E9%9B%86%E5%90%88/">
 
@@ -205,10 +207,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2019-12-02 18:44:06 / Modified: 19:38:40" itemprop="dateCreated datePublished" datetime="2019-12-02T18:44:06+08:00">2019-12-02</time>
+              <time title="Created: 2019-12-02 18:44:06" itemprop="dateCreated datePublished" datetime="2019-12-02T18:44:06+08:00">2019-12-02</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-05 10:24:25" itemprop="dateModified" datetime="2019-12-05T10:24:25+08:00">2019-12-05</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -246,7 +254,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>集合是由一组无序且唯一的项组成。</p>
+        <p><img alt data-src="/images/2019/12/set.jpg"><br>集合是由一组无序且唯一的项组成。</p>
 <p>集合中的元素称为成员。</p>
 <p>常见的集合操作有取交集，并集，差集，判断子集等。</p>
 <a id="more"></a>
@@ -273,6 +281,9 @@
 <h4 id="2-和数组互转-数组去重"><a href="#2-和数组互转-数组去重" class="headerlink" title="2. 和数组互转,数组去重"></a>2. 和数组互转,数组去重</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> items = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]); <span class="comment">// Array转Set</span></span><br><span class="line"><span class="keyword">const</span> array = <span class="built_in">Array</span>.from(items); <span class="comment">// or [...items] Set转Array</span></span><br><span class="line"></span><br><span class="line">[...new <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>])] <span class="comment">// 1 2 3 4 // 去重</span></span><br><span class="line">[...new <span class="built_in">Set</span>(<span class="string">'ababbc'</span>)].join(<span class="string">''</span>) <span class="comment">// "abc" 字符串也可去重</span></span><br></pre></td></tr></table></figure>
 <h4 id="3-求数组的交集，并集，差集"><a href="#3-求数组的交集，并集，差集" class="headerlink" title="3. 求数组的交集，并集，差集"></a>3. 求数组的交集，并集，差集</h4><p>可以在内层利用数组的操作方法，外层转为Set</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);</span><br><span class="line"><span class="keyword">let</span> b = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 并集</span></span><br><span class="line"><span class="keyword">let</span> union = <span class="keyword">new</span> <span class="built_in">Set</span>([...a, ...b]);</span><br><span class="line"><span class="comment">// Set &#123;1, 2, 3, 4&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 交集</span></span><br><span class="line"><span class="keyword">let</span> intersect = <span class="keyword">new</span> <span class="built_in">Set</span>([...a].filter(<span class="function"><span class="params">x</span> =&gt;</span> b.has(x)));</span><br><span class="line"><span class="comment">// set &#123;2, 3&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 差集</span></span><br><span class="line"><span class="keyword">let</span> difference = <span class="keyword">new</span> <span class="built_in">Set</span>([...a].filter(<span class="function"><span class="params">x</span> =&gt;</span> !b.has(x)));</span><br><span class="line"><span class="comment">// Set &#123;1&#125;</span></span><br></pre></td></tr></table></figure>
+<h4 id="WeakSet"><a href="#WeakSet" class="headerlink" title="WeakSet"></a>WeakSet</h4><p>WeakSet 类似Set，没有重复值，但值都需是对象</p>
+<p>WeakSet 中的对象都是弱引用，即垃圾回收机制不考虑 WeakSet 对该对象的引用，也就是说，如果其他对象都不再引用该对象，那么垃圾回收机制会自动回收该对象所占用的内存，不考虑该对象还存在于 WeakSet 之中。</p>
+<p>WeakSet值不能遍历，都是弱引用。一个应用是，存储dom节点，不用担心这些节点从文档移除时，会引发内存泄漏。</p>
 
     </div>
 
@@ -339,7 +350,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性方法"><span class="nav-number">1.</span> <span class="nav-text">属性方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#es6实现集合"><span class="nav-number">2.</span> <span class="nav-text">es6实现集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#es6原生集合-Set"><span class="nav-number">3.</span> <span class="nav-text">es6原生集合-Set</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-实例属性方法"><span class="nav-number">3.1.</span> <span class="nav-text">1. 实例属性方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-和数组互转-数组去重"><span class="nav-number">3.2.</span> <span class="nav-text">2. 和数组互转,数组去重</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-求数组的交集，并集，差集"><span class="nav-number">3.3.</span> <span class="nav-text">3. 求数组的交集，并集，差集</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性方法"><span class="nav-number">1.</span> <span class="nav-text">属性方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#es6实现集合"><span class="nav-number">2.</span> <span class="nav-text">es6实现集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#es6原生集合-Set"><span class="nav-number">3.</span> <span class="nav-text">es6原生集合-Set</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-实例属性方法"><span class="nav-number">3.1.</span> <span class="nav-text">1. 实例属性方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-和数组互转-数组去重"><span class="nav-number">3.2.</span> <span class="nav-text">2. 和数组互转,数组去重</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-求数组的交集，并集，差集"><span class="nav-number">3.3.</span> <span class="nav-text">3. 求数组的交集，并集，差集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WeakSet"><span class="nav-number">3.4.</span> <span class="nav-text">WeakSet</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

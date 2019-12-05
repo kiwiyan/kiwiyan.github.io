@@ -47,15 +47,15 @@
   };
 </script>
 
-  <meta name="description" content="字典字典以键值对来存储元素，字典也称为映射。 散列表">
+  <meta name="description" content="字典字典是一种以键值对(key-value)形式来存储元素的数据结构钢，也称为映射。 js中的Object类就是以字典的形式设计的。">
 <meta name="keywords" content="数据结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="字典和散列表">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;02&#x2F;%E5%AD%97%E5%85%B8%E5%92%8C%E6%95%A3%E5%88%97%E8%A1%A8&#x2F;index.html">
 <meta property="og:site_name" content="Kiwi Yan&#39;s Blog">
-<meta property="og:description" content="字典字典以键值对来存储元素，字典也称为映射。 散列表">
+<meta property="og:description" content="字典字典是一种以键值对(key-value)形式来存储元素的数据结构钢，也称为映射。 js中的Object类就是以字典的形式设计的。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-03T03:28:52.010Z">
+<meta property="og:updated_time" content="2019-12-05T03:20:14.042Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2019/12/02/%E5%AD%97%E5%85%B8%E5%92%8C%E6%95%A3%E5%88%97%E8%A1%A8/">
@@ -213,7 +213,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-03 11:28:52" itemprop="dateModified" datetime="2019-12-03T11:28:52+08:00">2019-12-03</time>
+                <time title="Modified: 2019-12-05 11:20:14" itemprop="dateModified" datetime="2019-12-05T11:20:14+08:00">2019-12-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -252,8 +252,54 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h2><p>字典以键值对来存储元素，字典也称为映射。</p>
-<h2 id="散列表"><a href="#散列表" class="headerlink" title="散列表"></a>散列表</h2>
+        <h2 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h2><p>字典是一种以键值对(key-value)形式来存储元素的数据结构钢，也称为映射。</p>
+<p>js中的Object类就是以字典的形式设计的。</p>
+<a id="more"></a>
+
+<p>js的实现方式，不再赘述。下面介绍下es6原生字典的数据结构。</p>
+<h3 id="es6原生字典Map"><a href="#es6原生字典Map" class="headerlink" title="es6原生字典Map"></a>es6原生字典Map</h3><p><code>Map</code>类似于对象的键值对，但键的值不止为string型，可以为任意类型，包含对象型。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> m = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line"><span class="keyword">const</span> o = &#123;<span class="attr">p</span>: <span class="string">'Hello World'</span>&#125;;</span><br><span class="line"></span><br><span class="line">m.set(o, <span class="string">'content'</span>) <span class="comment">// 写值</span></span><br><span class="line">m.get(o) <span class="comment">// "content" // 读值</span></span><br><span class="line"></span><br><span class="line">m.has(o) <span class="comment">// true</span></span><br><span class="line">m.delete(o) <span class="comment">// true</span></span><br><span class="line">m.has(o) <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<p><code>WeakMap</code>结构，和Map类似，但只接受对象作为键名。WeakMap 应用的典型场合就是 DOM 节点作为键名，用于垃圾回收。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> myElement = <span class="built_in">document</span>.getElementById(<span class="string">'logo'</span>);</span><br><span class="line"><span class="keyword">let</span> myWeakmap = <span class="keyword">new</span> <span class="built_in">WeakMap</span>();</span><br><span class="line"></span><br><span class="line">myWeakmap.set(myElement, &#123;<span class="attr">timesClicked</span>: <span class="number">0</span>&#125;);</span><br><span class="line"></span><br><span class="line">myElement.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> logoData = myWeakmap.get(myElement);</span><br><span class="line">  logoData.timesClicked++;</span><br><span class="line">&#125;, <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="散列表"><a href="#散列表" class="headerlink" title="散列表"></a>散列表</h2><p>散列表的作用是给定一个键值，返回键值在表中的地址。</p>
+<h3 id="属性方法"><a href="#属性方法" class="headerlink" title="属性方法"></a>属性方法</h3><ul>
+<li>put(key, value) 向散列表添加新项</li>
+<li>get(key) 获取散列表中的项</li>
+<li>remove(key) 移除散列表中的项</li>
+</ul>
+<h3 id="散列函数"><a href="#散列函数" class="headerlink" title="散列函数"></a>散列函数</h3><p>散列表也是key value的对象存储方式，实现起来也比较容易。重点在于散列函数的实现，即如何实现key的值，使key能够唯一映射到value的值。<br>散列函数的作用就是输入一个value，能够产生一个唯一的key与之对应。</p>
+<p>其中的一种散列函数实现方法就是，计算出字符串每个字符的unicode之和，然后求出与一个质数的余数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loseloseHashCode</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> hash = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; key.length; i++) &#123; </span><br><span class="line">    hash += key.charCodeAt(i);         </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> hash % <span class="number">37</span>;                     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="散列冲突"><a href="#散列冲突" class="headerlink" title="散列冲突"></a>散列冲突</h3><p>利用散列函数计算一个散列值的时，可能会出现一个value对应多个key的情况，这种情况称为冲突(或碰撞)。<br>比如用上述loseloseHashCode计算时：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">loseloseHashCode(<span class="string">'Jamie'</span>); <span class="comment">// 5</span></span><br><span class="line">loseloseHashCode(<span class="string">'Sue'</span>); <span class="comment">// 5</span></span><br></pre></td></tr></table></figure>
+
+<p>平均情况下，散列表的查找速度和数组一样快，插入和删除的速度和链表一样快，兼具两者优点。但最糟糕的情况下，散列表的各种操作都很慢，因此需要避免最糟糕情况。为此需要避免冲突，可以从以下方面处理：</p>
+<ul>
+<li><ol>
+<li>较低的填装因子</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>较好的散列函数</li>
+</ol>
+</li>
+</ul>
+<p>其中，<code>填装因子 = 散列表元素个数 / 位置总数</code>。填装因子越低，发生冲突的可能性就越低。</p>
+<p>良好的散列函数，是呈均匀分布的。具体可以了解下 <code>SHA</code>函数。</p>
+<h3 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h3><p>解决冲突的方式一般有两种：分离链接，线性探查</p>
+<h4 id="分离链接法-开链法"><a href="#分离链接法-开链法" class="headerlink" title="分离链接法(开链法)"></a>分离链接法(开链法)</h4><p>分离链接就是一个key值对应一个链表和数组等结构，在这个结构里存储多个value值。</p>
+<h4 id="线性探查法"><a href="#线性探查法" class="headerlink" title="线性探查法"></a>线性探查法</h4><p>向某个 <code>index</code> 位置加入一个新元素时，如果 <code>index</code> 位置已经被占据了，那就尝试下一个 <code>index+1</code> 的位置，直到找到空余的位置。</p>
+<p>核心的put写值方法如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.put = <span class="function"><span class="keyword">function</span>(<span class="params">key, value</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">let</span> position = loseloseHashCode(key); </span><br><span class="line">  <span class="keyword">if</span> (table[position] == <span class="literal">undefined</span>) &#123; <span class="comment">// 空位的话，直接写入</span></span><br><span class="line">    table[position] = value; </span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> index = ++position; <span class="comment">// 非空位的，挪向下一位</span></span><br><span class="line">    <span class="keyword">while</span> (table[index] != <span class="literal">undefined</span>)&#123; </span><br><span class="line">      index++; </span><br><span class="line">    &#125;</span><br><span class="line">    table[index] = value; </span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="更好的散列函数"><a href="#更好的散列函数" class="headerlink" title="更好的散列函数"></a>更好的散列函数</h3><p>上述的loseloseHashCode并不是一个好的散列函数，容易产生冲突。<br>一个好的散列函数，主要包含两方面，插入和检索元素的时间(性能),以及较低的冲突可能性。</p>
+<p>更好的一个散列函数 djb2，如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">djb2Hash</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> code = <span class="number">5381</span>; <span class="comment">// 初始化一个质数，大多数使用5381</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = str.length; i &lt; len; i++) &#123;</span><br><span class="line">    code = code * <span class="number">33</span> + str.charCodeAt(i); <span class="comment">// 用来当做一个魔力数</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> code % <span class="number">1013</span>; <span class="comment">// 一个随机质数，但要比散列表大小大。(比如散列表大小为1000)</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(djb2Hash(<span class="string">'kiwiyan'</span>)); <span class="comment">// 568</span></span><br></pre></td></tr></table></figure>
+
+
+
     </div>
 
     
@@ -316,7 +362,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#字典"><span class="nav-number">1.</span> <span class="nav-text">字典</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#散列表"><span class="nav-number">2.</span> <span class="nav-text">散列表</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#字典"><span class="nav-number">1.</span> <span class="nav-text">字典</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#es6原生字典Map"><span class="nav-number">1.1.</span> <span class="nav-text">es6原生字典Map</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#散列表"><span class="nav-number">2.</span> <span class="nav-text">散列表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性方法"><span class="nav-number">2.1.</span> <span class="nav-text">属性方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#散列函数"><span class="nav-number">2.2.</span> <span class="nav-text">散列函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#散列冲突"><span class="nav-number">2.3.</span> <span class="nav-text">散列冲突</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决冲突"><span class="nav-number">2.4.</span> <span class="nav-text">解决冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分离链接法-开链法"><span class="nav-number">2.4.1.</span> <span class="nav-text">分离链接法(开链法)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线性探查法"><span class="nav-number">2.4.2.</span> <span class="nav-text">线性探查法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更好的散列函数"><span class="nav-number">2.5.</span> <span class="nav-text">更好的散列函数</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
